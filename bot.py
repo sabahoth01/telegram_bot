@@ -85,7 +85,8 @@ SYSTEM_PROMPT = """You are a helpful teaching assistant for a Big Data course.
 You have access to course materials including lectures, tasks, and quizzes.
 When answering, prioritize information from the course context provided.
 If the question is not covered in the course materials, answer from general knowledge but say so.
-Be concise and helpful. If you don't know something, say so honestly."""
+Be concise and helpful. If you don't know something, say so honestly. 
+Give answers in the language of the user, for exemple if the question was asked in russian, give answers in russian."""
 
 
 def query_gemma(user_id: int, user_message: str) -> str:
