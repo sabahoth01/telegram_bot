@@ -24,6 +24,8 @@ help:
 	@echo "  make pull-model   Re-pull Gemma model"
 	@echo "  make test-ollama  Test Ollama is alive"
 	@echo "  make clean        Remove all containers and volumes"
+	@echo "  make backup       Create copy of the chromaDB"
+	@echo "  make restore      Restore the selected DB archive"
 	@echo ""
 
 run:
@@ -67,6 +69,25 @@ ingest:
 re-ingest:
 	docker exec -it gemma-bot python -c "import shutil; shutil.rmtree('/app/chroma_db', ignore_errors=True)"
 	docker exec -it gemma-bot python ingest.py
+
+backup:
+	@echo "Backup ChromaDB..."
+	tar -czvf chroma_db_backup_$$(date +%Y%m%d_%H%M%S).tar.gz ./chroma_db
+	@echo "Savec!"
+
+restore:
+	@echo "Available backups :"
+	@ls *.tar.gz 2>/dev/null || echo "Aucune sauvegarde trouvée."
+	@read -p "Enter complet na,e of the backup : " backup_file; \
+	if [ -f $$backup_file ]; then \
+		echo "Restauration of $$backup_file..."; \
+		rm -rf ./chroma_db; \
+		tar -xzvf $$backup_file; \
+		echo "Restauration done."; \
+	else \
+		echo "Error : File not found."; \
+	fi
+
 
 clean:
 	docker compose down -v --remove-orphans
