@@ -1,5 +1,6 @@
 import chromadb
 from sentence_transformers import SentenceTransformer
+from chromadb.config import Settings
 import logging
 
 logger = logging.getLogger(__name__)
@@ -24,7 +25,8 @@ def get_embedder():
 def get_collection():
     global _collection
     if _collection is None:
-        client = chromadb.PersistentClient(path="/app/chroma_db")
+        client = chromadb.PersistentClient(path="/app/chroma_db",
+                                          settings=Settings(anonymized_telemetry=False) )
         _collection = client.get_or_create_collection(
             name=COLLECTION_NAME,
             metadata={"hnsw:space": "cosine"}
