@@ -1,35 +1,19 @@
 services:
-
-  ollama:
-    image: ollama/ollama
-    container_name: ollama
-    restart: always
-    volumes:
-      - ollama_data:/root/.ollama
-
-  ollama-init:
-    image: ollama/ollama
-    container_name: ollama-init
-    depends_on:
-      - ollama
-    entrypoint: sh -c "sleep 5 && ollama pull gemma:2b"
-    environment:
-      - OLLAMA_HOST=http://ollama:11434
-    restart: "no"
-
   bot:
     build: .
     container_name: gemma-bot
     restart: always
-    depends_on:
-      - ollama
+
     env_file:
       - .env
-    environment:
-      - OLLAMA_HOST=http://ollama:11434
-    volumes:
-      - ./chroma_db:/app/chroma_db      # persist vector DB
-      - ./course_docs:/app/course_docs  # mount your docs
 
-volumes:
-  ollama_data:
+    environment:
+      - OLLAMA_HOST=http://host.docker.internal:11434
+      - ANONYMIZED_TELEMETRY=False
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+    volumes:
+      - ./chroma_db:/app/chroma_db
+      - ./course_docs:/app/course_docs 
