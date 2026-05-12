@@ -13,7 +13,3 @@ services:
 
     extra_hosts:
       - "host.docker.internal:host-gateway"
-
-    # volumes:
-    #   - ./chroma_db:/app/chroma_db
-    #   - ./course_docs:/app/course_docs 
