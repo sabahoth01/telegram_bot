@@ -6,12 +6,13 @@ from sentence_transformers import SentenceTransformer
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from pypdf import PdfReader
 import logging
+from chromadb.config import Settings
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 logger = logging.getLogger(__name__)
 
-DOCS_DIR = "./course_docs"
-CHROMA_DIR = "./chroma_db"
+DOCS_DIR = "/app/course_docs"
+CHROMA_DIR = "/app/chroma_db"
 COLLECTION_NAME = "bigdata_course"
 EMBED_MODEL = "all-MiniLM-L6-v2"
 
@@ -95,7 +96,10 @@ def ingest():
     embeddings = embedder.encode(texts, show_progress_bar=True).tolist()
 
     # Store in ChromaDB
-    client = chromadb.PersistentClient(path=CHROMA_DIR)
+    client = chromadb.PersistentClient(
+        path=CHROMA_DIR,
+        settings=Settings(anonymized_telemetry=False)
+    )
 
     # Clear existing collection to avoid duplicates on re-ingest
     try:
